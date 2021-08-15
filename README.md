@@ -1,5 +1,14 @@
 # autosftp
 Python SFTP script to verify Internet performance
+Script is tested on Ubuntu Linux and Python3
+
+# Install required 3rd party module
+* It is suggested to install these in virtual environment
+```bash
+python3 -m virtualenv ENV_NAME
+source ENV_NAME/bin/activate
+python3 -m pip install -r requirements.txt
+```
 
 # Build your own configuration file
 Example:
