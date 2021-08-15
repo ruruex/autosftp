@@ -1,4 +1,4 @@
-# sftp_test
+# autosftp
 Python SFTP script to verify Internet performance
 
 # Build your own configuration file
