@@ -132,3 +132,4 @@ dmypy.json
 *.bin
 sftp_config.json
 sftp.log
+cronjob.sh
