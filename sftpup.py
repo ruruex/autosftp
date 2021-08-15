@@ -1,9 +1,10 @@
+from json.decoder import JSONDecodeError
 import os
 import argparse
 import json
+import time
 
 import pysftp
-
 
 def sftp_connect(hostname,sftp_username,sftp_password,home_dir,sftp_action,sftp_file):
     '''
@@ -18,6 +19,13 @@ def sftp_connect(hostname,sftp_username,sftp_password,home_dir,sftp_action,sftp_
             else:
                 return 'wrong sftp_action'
 
+def write_log(content,logfile_name):
+    '''
+    Write log to file
+    '''
+    with open (logfile_name,'a') as logfileobj:
+        logfileobj.write(content)
+
 def Main():
     '''
     Main function for argument build up and config file loading
@@ -29,15 +37,32 @@ def Main():
      
     args = parser.parse_args()
 
-    sftp_file = args.filename
     loaded_file = args.load
     sftp_action = args.action
 
-    with open(loaded_file,'r') as config_file:
-        config_dict = json.load(config_file)
+    if os.path.isfile(args.filename):
+        sftp_file = args.filename
+    else:
+        os._exit('file does not exits')
 
+    try:
+        with open(loaded_file,'r') as config_file:
+            config_dict = json.load(config_file)
+    except IOError:
+        print('Config file not exists')
+    except JSONDecodeError:
+        print('Config file JSON decode error, check your format')
 
+    starttime = time.time()
     sftp_connect(config_dict['hostname'],config_dict['username'],config_dict['password'],config_dict['home_dir'],sftp_action,sftp_file)
+    endtime = time.time() # type - float
+    duration = round((endtime - starttime),2)
+    print(f'The {sftp_action} takes: {duration}')
+    local_time = time.strptime(time.time(),)
+    #print(f'Local time is {local_time}')
+
+    log_str = f"{local_time} sftpup.py: {sftp_action} to {config_dict['hostname']} {config_dict['home_dir']} takes: {duration} seconds \n"
+    write_log(log_str,'sftp.log')
 
     
 if __name__ == '__main__':

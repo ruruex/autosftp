@@ -131,3 +131,4 @@ dmypy.json
 # customized for this repo
 *.bin
 sftp_config.json
+sftp.log
