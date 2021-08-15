@@ -2,7 +2,8 @@ from json.decoder import JSONDecodeError
 import os
 import argparse
 import json
-import time
+#import time
+import datetime
 
 import pysftp
 
@@ -53,15 +54,17 @@ def Main():
     except JSONDecodeError:
         print('Config file JSON decode error, check your format')
 
-    starttime = time.time()
+    starttime = datetime.datetime.now()
     sftp_connect(config_dict['hostname'],config_dict['username'],config_dict['password'],config_dict['home_dir'],sftp_action,sftp_file)
-    endtime = time.time() # type - float
-    duration = round((endtime - starttime),2)
+    endtime = datetime.datetime.now()
+    duration = endtime - starttime
     print(f'The {sftp_action} takes: {duration}')
-    local_time = time.strptime(time.time(),)
+
+    log_time = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S ")
+    machine_timezone = datetime.datetime.now(datetime.timezone.utc).astimezone().tzname()
     #print(f'Local time is {local_time}')
 
-    log_str = f"{local_time} sftpup.py: {sftp_action} to {config_dict['hostname']} {config_dict['home_dir']} takes: {duration} seconds \n"
+    log_str = f"{log_time} {machine_timezone} sftpup.py: {sftp_action} to {config_dict['hostname']} {config_dict['home_dir']} takes: {duration}  \n"
     write_log(log_str,'sftp.log')
 
     
